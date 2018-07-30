@@ -81,6 +81,7 @@ The Regents of the University of California.  All rights reserved.\n";
  * in the opposite order works fine.
  */
 #ifdef HAVE_CAPSICUM
+
 #include <sys/capability.h>
 #include <sys/ioccom.h>
 #include <net/bpf.h>
@@ -1305,6 +1306,10 @@ open_interface(const char *device, netdissect_options *ndo, char *ebuf)
 		if (status < 0)
 			error("%s: Can't set time stamp type: %s",
 		              device, pcap_statustostr(status));
+    else if (status == PCAP_WARNING_TSTAMP_TYPE_NOTSUP)
+      warning("Could not set timestamp type '%s' on %s: %s",
+        pcap_tstamp_type_val_to_name(jflag), device,
+        pcap_statustostr(status));
 	}
 #endif
 	status = pcap_activate(pc);
